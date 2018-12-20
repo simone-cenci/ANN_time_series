@@ -11,9 +11,10 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
 from Functions import AE, create_dataset
 from MakeNoise import MakeNoise
-#######################################################################################
-### run as python -W ignore main.py DataName.txt 0/1 for no/yes observational noise ###
-#######################################################################################
+################################################################################################
+### run as python -W ignore main.py DataName.txt 0/1 (for no/yes observational noise) tstart ###
+### For example: python -W ignore main.py deterministic_chaos.txt 0 0		             ###
+################################################################################################
 # load the dataset
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 NomeFile = sys.argv[1]
