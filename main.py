@@ -65,7 +65,7 @@ model.add(LSTM(32, input_shape=(look_back,  num_species)))
 ### Decide whether to use sparsity or not
 model.add(Dense(num_species, activation = 'linear', activity_regularizer=regularizers.l2(10e-5)))
 #model.add(Dense(num_species, activation = 'linear'))
-model.compile(loss='mean_squared_error', optimizer='adam')
+model.compile(loss='mean_squared_error', optimizer='rmsprop')
 sys.stdout = open(os.devnull, "w")
 model.fit(trainX, trainY, epochs=300, validation_data = (ValX, ValY), verbose=0)
 sys.stdout = sys.__stdout__
@@ -101,7 +101,7 @@ os_rmse = np.sqrt(np.mean((next_point - test_set[1:(length_predictions),:])**2))
 os_correlation = np.mean([pearsonr(next_point[:,i], test_set[1:(length_predictions), i])[0] for i in range(num_species)])
 print 'RMSE of naive forecast = ', os_naive
 print 'RMSE of LSTM  forecast = ', os_rmse
-
+print 'correlation coefficient of LSTM  forecast = ', os_correlation
 
 ########################################################################################################
 plot = True
@@ -109,21 +109,22 @@ if plot == True:
         all_data = np.concatenate((ts_training_original,test_set[0:(length_predictions),:]), axis = 0)
         all_data_reconstructed = np.concatenate((training_data,next_point), axis = 0)
 	f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, sharex='col', sharey='row')
+	interval_forecast = range((train_length + validation_length+1), np.shape(all_data_reconstructed)[0])
 
-	ax1.plot(all_data_reconstructed[:,0], lw = 2, color = 'r', label = 'Forecast')
 	ax1.plot(all_data[:,0], color = 'b')
+	ax1.plot(interval_forecast, all_data_reconstructed[interval_forecast,0], lw = 2, linestyle = '--', color = 'r', label = 'Forecast')
 	ax1.axvline(x = (train_length + validation_length), lw = 2, ls = '--')
 	ax1.legend()
 
-	ax2.plot(all_data_reconstructed[:,1], lw = 2, color = 'r', label = 'Forecast')
 	ax2.plot(all_data[:,1], color = 'b')
+	ax2.plot(interval_forecast, all_data_reconstructed[interval_forecast,1], lw = 2, linestyle = '--', color = 'r', label = 'Forecast')
 	ax2.axvline(x = (train_length + validation_length), lw = 2, ls = '--')
 
-	ax3.plot(all_data_reconstructed[:,2], lw = 2,color = 'r', label = 'Forecast')
 	ax3.plot(all_data[:,2], color = 'b')
+	ax3.plot(interval_forecast, all_data_reconstructed[interval_forecast,2], lw = 2, linestyle = '--', color = 'r', label = 'Forecast')
 	ax3.axvline(x = (train_length + validation_length), lw = 2, ls = '--')
 
-	ax4.plot(all_data_reconstructed[:,3], lw = 2, color = 'r', label = 'Forecast')
 	ax4.plot(all_data[:,3], color = 'b')
+	ax4.plot(interval_forecast, all_data_reconstructed[interval_forecast,3], lw = 2, linestyle = '--', color = 'r', label = 'Forecast')
 	ax4.axvline(x = (train_length + validation_length), lw = 2, ls = '--')
 	plt.show()
