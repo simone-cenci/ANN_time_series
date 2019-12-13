@@ -6,6 +6,7 @@ import random as rnd
 from forecast_function import lstm_forecast
 from Functions import plot_function
 
+### Long-short term memory
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 #data  = np.loadtxt('deterministic_chaos.txt')
 data  = np.loadtxt('CR.txt')
